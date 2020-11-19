@@ -1,7 +1,9 @@
 package com.kakao.kapi.exception;
 
-public class SprinkleValidationException extends RuntimeException {
-    public SprinkleValidationException(String message) {
-        super(message);
+import com.kakao.kapi.constants.ErrorType;
+
+public class SprinkleValidationException extends SprinkleException {
+    public SprinkleValidationException(ErrorType errorType) {
+        super(errorType);
     }
 }
