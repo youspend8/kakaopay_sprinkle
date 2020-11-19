@@ -1,0 +1,23 @@
+POST http://localhost:8080/v1/sprinkle?money=1000&division=3
+Content-Type: application/json
+X-ROOM-ID: abc
+X-USER-ID: 123
+
+{
+  "money": 1000,
+  "division": 50
+}
+###
+
+GET http://localhost:8080/v1/sprinkle/zEf
+X-ROOM-ID: abc
+X-USER-ID: 123
+
+###
+
+PUT http://localhost:8080/v1/sprinkle/zEf
+X-ROOM-ID: abc
+X-USER-ID: 123
+
+###
+
