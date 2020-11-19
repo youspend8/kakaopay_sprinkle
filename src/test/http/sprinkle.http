@@ -1,4 +1,4 @@
-POST http://localhost:8080/v1/sprinkle?money=1000&division=3
+POST http://localhost:8080/v1/sprinkle
 Content-Type: application/json
 X-ROOM-ID: abc
 X-USER-ID: 123
