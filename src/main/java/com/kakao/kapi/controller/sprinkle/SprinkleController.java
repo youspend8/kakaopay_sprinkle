@@ -1,11 +1,13 @@
-package com.kakao.kapi.controller;
+package com.kakao.kapi.controller.sprinkle;
 
 import com.kakao.kapi.domain.SprinkleGenerateVO;
-import com.kakao.kapi.domain.SprinkleMasterEntity;
+import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 import com.kakao.kapi.service.SprinkleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/v1/sprinkle")
@@ -18,7 +20,7 @@ public class SprinkleController {
      * @param userId Http Header(X-USER-ID)
      * @param roomId Http Header(X-ROOM-ID)
      * @param token 뿌리기 건의 Token
-     * @return {@link com.kakao.kapi.domain.SprinkleMasterEntity}
+     * @return {@link SprinkleMasterEntity}
      */
     @GetMapping("/{token}")
     public ResponseEntity<?> info(
@@ -35,7 +37,7 @@ public class SprinkleController {
      * 뿌리기 요청(생성)
      * @param userId Http Header(X-USER-ID)
      * @param roomId Http Header(X-ROOM-ID)
-     * @param sprinkleGenerate {@link com.kakao.kapi.domain.SprinkleGenerateVO}
+     * @param sprinkleGenerate {@link SprinkleGenerateVO}
      * @return 생성된 Token
      */
     @PostMapping(produces = "application/json")
@@ -46,7 +48,8 @@ public class SprinkleController {
 
         String token = sprinkleService.sprinkle(userId, roomId, sprinkleGenerate);
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.created(URI.create("/" + token))
+                .body(token);
     }
 
     /**

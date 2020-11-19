@@ -1,7 +1,7 @@
 package com.kakao.kapi.service;
 
 import com.kakao.kapi.domain.SprinkleGenerateVO;
-import com.kakao.kapi.domain.SprinkleMasterEntity;
+import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 import org.springframework.stereotype.Component;
 
 @Component

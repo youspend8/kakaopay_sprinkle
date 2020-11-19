@@ -1,14 +1,14 @@
 package com.kakao.kapi.service;
 
 import com.kakao.kapi.domain.SprinkleGenerateVO;
-import com.kakao.kapi.domain.SprinkleMasterEntity;
+import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 
 public interface SprinkleService {
     /**
      * 뿌리기
      * @param userId Http Header(X-USER-ID)
      * @param roomId Http Header(X-ROOM-ID)
-     * @param sprinkleGenerate  {@link com.kakao.kapi.domain.SprinkleGenerateVO}
+     * @param sprinkleGenerate  {@link SprinkleGenerateVO}
      * @return 생성된 Token
      */
     String sprinkle(int userId, String roomId, SprinkleGenerateVO sprinkleGenerate);
@@ -27,7 +27,7 @@ public interface SprinkleService {
      * @param userId Http Header(X-USER-ID)
      * @param roomId Http Header(X-ROOM-ID)
      * @param token 뿌리기 건의 Token
-     * @return {@link com.kakao.kapi.domain.SprinkleMasterEntity}
+     * @return {@link SprinkleMasterEntity}
      */
     SprinkleMasterEntity lookup(int userId, String roomId, String token);
 }
