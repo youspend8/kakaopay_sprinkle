@@ -1,0 +1,21 @@
+
+CREATE TABLE IF NOT EXISTS `SPRINKLE_MASTER` (
+    `TOKEN` char(3) NOT NULL COMMENT '뿌리기 생성 토큰',
+    `ROOM_ID` char(3) NOT NULL COMMENT '생성된 채팅방 ID',
+    `USER_ID` char(3) NOT NULL COMMENT '생성한 사용자 ID',
+    `MONEY` int(11) NOT NULL COMMENT '총 뿌린 금액',
+    `DIVISION` int(11) NOT NULL COMMENT '뿌리기를 나눈 수',
+    `CREATE_AT` datetime NOT NULL DEFAULT current_timestamp() COMMENT '뿌리기 생성 일시',
+    PRIMARY KEY (`TOKEN`)
+);
+
+CREATE TABLE IF NOT EXISTS `SPRINKLE_DETAIL` (
+    `SPD_ID` int(11) NOT NULL AUTO_INCREMENT COMMENT '뿌리기 상세 ID',
+    `TOKEN` char(3) DEFAULT NULL COMMENT '뿌리기 생성 토큰',
+    `MONEY` int(11) NOT NULL COMMENT '나누어진 금액 (줍기 금액)',
+    `USER_ID` char(3) NOT NULL COMMENT '주운 사용자 ID',
+    `PICKUP_AT` datetime NOT NULL DEFAULT current_timestamp() COMMENT '주운 일시',
+    PRIMARY KEY (`SPD_ID`),
+    KEY `SPRINKLE_DETAIL_SPRINKLE_MASTER_FK` (`TOKEN`),
+    CONSTRAINT `SPRINKLE_DETAIL_SPRINKLE_MASTER_FK` FOREIGN KEY (`TOKEN`) REFERENCES `SPRINKLE_MASTER` (`TOKEN`)
+);
