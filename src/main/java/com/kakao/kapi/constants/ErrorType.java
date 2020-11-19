@@ -18,6 +18,6 @@ public enum ErrorType {
     CODE_100(100, "요청 헤더 중 누락된 값이 존재합니다."),
     CODE_101(101, "Internal Server Error");
 
-    private int code;
-    private String message;
+    private final int code;
+    private final String message;
 }
