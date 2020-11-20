@@ -23,7 +23,7 @@ public class SprinkleDetailEntity {
     private int money;
 
     @Column(name = "USER_ID")
-    private int userId;
+    private Integer userId;
 
     @Column(name = "PICKUP_AT")
     private LocalDateTime pickupAt;
