@@ -53,9 +53,13 @@
 mvn spring-boot:run
 ```
 
-## 데이터베이스 생성
+## 데이터베이스 초기화
 
 ```sql
+CREATE USER 'service'@'%' IDENTIFIED BY 'service!@#$';
+GRANT ALL PRIVILEGES ON KAKAOPAY.* TO 'service'@'%' IDENTIFIED BY 'service!@#$';
+FLUSH PRIVILEGES;
+
 CREATE DATABASE KAKAOPAY;
 ```
 
@@ -86,7 +90,7 @@ X-USER-ID: {USER_ID}
 ```
 {
   "code": 0,
-  "message": "정상처리",
+  "message": "정상적으로 처리되었습니다.",
   "data": "Kaf"
 }
 ```
@@ -120,7 +124,7 @@ X-USER-ID: {USER_ID}
 ```
 {
   "code": 0,
-  "message": "정상처리",
+  "message": "정상적으로 처리되었습니다.",
   "data": 818
 }
 ```
@@ -154,7 +158,7 @@ X-USER-ID: {USER_ID}
 ```
 {
   "code": 0,
-  "message": "정상처리",
+  "message": "정상적으로 처리되었습니다.",
   "data": {
     "money": 1000,
     "create_at": "20201119131512",
@@ -194,4 +198,13 @@ X-USER-ID: {USER_ID}
 
 |Code|Description|
 |:---|:---|
-|0|정상처리|
+|0|정상적으로 처리되었습니다.|
+|10|뿌린 건에 대한 조회는 7일 동안 할 수 있습니다.|
+|11|뿌린 사람 자신만 조회를 할 수 있습니다.|
+|20|뿌린건은 10분간만 유효합니다.|
+|21|뿌리기가 호출된 대화방과 동일한 대화방에 속한 사용자만이 받을 수 있습니다.|
+|22|뿌리기 당 한 사용자는 한번만 받을 수 있습니다.|
+|23|자신이 뿌리기한 건은 자신이 받을 수 없습니다.|
+|50|유효하지 않은 token 입니다.|
+|100|요청 헤더 중 누락된 값이 존재합니다.|
+|101|Internal Server Error|
