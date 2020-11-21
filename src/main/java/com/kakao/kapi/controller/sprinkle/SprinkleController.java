@@ -49,7 +49,7 @@ public class SprinkleController {
 
         String token = sprinkleService.sprinkle(userId, roomId, sprinkleGenerate);
 
-        return ResponseEntity.created(URI.create("/" + token))
+        return ResponseEntity.created(URI.create("/v1/sprinkle/" + token))
                 .body(ResponseData.valueOf(token));
     }
 
