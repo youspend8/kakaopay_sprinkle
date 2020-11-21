@@ -1,5 +1,6 @@
 package com.kakao.kapi.controller.sprinkle;
 
+import com.kakao.kapi.domain.ResponseData;
 import com.kakao.kapi.domain.SprinkleGenerateVO;
 import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 import com.kakao.kapi.service.SprinkleService;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/v1/sprinkle")
+@RequestMapping(value = "/v1/sprinkle", consumes = "application/json")
 @RequiredArgsConstructor
 public class SprinkleController {
     private final SprinkleService sprinkleService;
@@ -40,8 +41,8 @@ public class SprinkleController {
      * @param sprinkleGenerate {@link SprinkleGenerateVO}
      * @return 생성된 Token
      */
-    @PostMapping(produces = "application/json")
-    public ResponseEntity<?> sprinkle(
+    @PostMapping(produces = "application/json; charset=UTF-8")
+    public ResponseEntity<ResponseData<String>> sprinkle(
             @RequestHeader("X-USER-ID") int userId,
             @RequestHeader("X-ROOM-ID") String roomId,
             @RequestBody SprinkleGenerateVO sprinkleGenerate) {
@@ -49,7 +50,7 @@ public class SprinkleController {
         String token = sprinkleService.sprinkle(userId, roomId, sprinkleGenerate);
 
         return ResponseEntity.created(URI.create("/" + token))
-                .body(token);
+                .body(ResponseData.valueOf(token));
     }
 
     /**
