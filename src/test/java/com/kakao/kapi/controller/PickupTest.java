@@ -19,12 +19,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("뿌리기 줍기 테스트")
 public class PickupTest extends SprinkleControllerTests {
     @MockBean
     private SprinkleMasterRepository sprinkleMasterRepository;
 
     @Test
-    @DisplayName("줍기 테스트 - 줍기 성공한 뿌리기 금액 return")
+    @DisplayName("줍기 성공한 뿌리기 금액 return")
     void pickupTest() throws Exception {
         when(sprinkleMasterRepository.findByToken(anyString()))
                 .thenReturn(mockSprinkle());
@@ -38,7 +39,7 @@ public class PickupTest extends SprinkleControllerTests {
     }
 
     @Test
-    @DisplayName("줍기 테스트 - 두번 이상 줍기 시도")
+    @DisplayName("두번 이상 줍기 시도")
     void pickupDuplicateTest() throws Exception {
         when(sprinkleMasterRepository.findByToken(anyString()))
                 .thenReturn(mockSprinkle());
@@ -51,7 +52,7 @@ public class PickupTest extends SprinkleControllerTests {
     }
 
     @Test
-    @DisplayName("줍기 테스트 - 자신이 뿌리기 한 건일 경우")
+    @DisplayName("자신이 뿌리기 한 건일 경우")
     void pickupSelfTest() throws Exception {
         when(sprinkleMasterRepository.findByToken(anyString()))
                 .thenReturn(mockSprinkle());
@@ -64,7 +65,7 @@ public class PickupTest extends SprinkleControllerTests {
     }
 
     @Test
-    @DisplayName("줍기 테스트 - 뿌리기가 호출된 대화방이 다를 경우")
+    @DisplayName("뿌리기가 호출된 대화방이 다를 경우")
     void pickupOtherRoomTest() throws Exception {
         when(sprinkleMasterRepository.findByToken(anyString()))
                 .thenReturn(mockSprinkle());
@@ -77,7 +78,7 @@ public class PickupTest extends SprinkleControllerTests {
     }
 
     @Test
-    @DisplayName("줍기 테스트 - 뿌리기 후 10분이 지난 경우")
+    @DisplayName("뿌리기 후 10분이 지난 경우")
     void pickupExpireTest() throws Exception {
         SprinkleMasterEntity sprinkleMasterEntity = mock(SprinkleMasterEntity.class);
 
@@ -94,7 +95,7 @@ public class PickupTest extends SprinkleControllerTests {
     }
 
     @Test
-    @DisplayName("줍기 테스트 - 뿌리기 건이 마감되었을 경우")
+    @DisplayName("뿌리기 건이 마감되었을 경우")
     void pickupSoldOutTest() throws Exception {
         SprinkleMasterEntity sprinkleMasterEntity = mock(SprinkleMasterEntity.class);
 
