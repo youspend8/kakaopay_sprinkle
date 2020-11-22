@@ -8,6 +8,7 @@ import com.kakao.kapi.exception.SprinkleNotFoundException;
 import com.kakao.kapi.exception.badrequest.ExpirySprinkleException;
 import com.kakao.kapi.exception.badrequest.MoreThanOncePickupException;
 import com.kakao.kapi.exception.badrequest.PickupSelfSprinkleException;
+import com.kakao.kapi.exception.badrequest.SoldOutSprinkleException;
 import com.kakao.kapi.exception.forbidden.NotMatchRoomException;
 import com.kakao.kapi.repository.SprinkleDetailRepository;
 import com.kakao.kapi.repository.SprinkleMasterRepository;
@@ -79,9 +80,33 @@ public class SprinkleServiceImpl implements SprinkleService {
     }
 
     @Override
+    @Transactional
     public int pickup(int userId, String roomId, String token) {
-        SprinkleMasterEntity sprinkleMasterEntity = sprinkleMasterRepository.findById(token)
-                .orElseThrow(() -> new SprinkleNotFoundException(ErrorType.CODE_102));
+        SprinkleMasterEntity sprinkleMasterEntity = sprinkleMasterRepository.findByToken(token);
+
+        validateSprinkle(sprinkleMasterEntity, userId, roomId);
+
+        List<SprinkleDetailEntity> detailList = sprinkleMasterEntity.getDetails();
+
+        SprinkleDetailEntity sprinkleDetailEntity = pickup(detailList);
+        sprinkleDetailEntity.setPickup(userId);
+
+        return sprinkleDetailEntity.getMoney();
+    }
+
+    private void validateSprinkle(SprinkleMasterEntity sprinkleMasterEntity, int userId, String roomId) {
+        //  해당 Token의 뿌리기를 찾을 수 없습니다.
+        if (sprinkleMasterEntity == null) {
+            throw new SprinkleNotFoundException(ErrorType.CODE_102);
+        }
+        //  뿌린건은 10분간만 유효합니다.
+        if (sprinkleMasterEntity.isExpired()) {
+            throw new ExpirySprinkleException();
+        }
+        //  해당 뿌리기건은 마감되었습니다.
+        if (sprinkleMasterEntity.isSoldOut()) {
+            throw new SoldOutSprinkleException();
+        }
         //  자신이 뿌리기한 건은 자신이 받을 수 없습니다.
         if (userId == sprinkleMasterEntity.getUserId()) {
             throw new PickupSelfSprinkleException();
@@ -90,22 +115,12 @@ public class SprinkleServiceImpl implements SprinkleService {
         if (!roomId.equals(sprinkleMasterEntity.getRoomId())) {
             throw new NotMatchRoomException();
         }
-        //  뿌린건은 10분간만 유효합니다.
-        if (sprinkleMasterEntity.getCreateAt().isBefore(LocalDateTime.now().minusMinutes(10))) {
-            throw new ExpirySprinkleException();
-        }
         //  뿌리기 당 한 사용자는 한번만 받을 수 있습니다.
         if (sprinkleMasterEntity.getDetails().stream()
                 .filter(x -> x.getUserId() != null)
                 .anyMatch(x -> x.getUserId() == userId)) {
             throw new MoreThanOncePickupException();
         }
-
-        List<SprinkleDetailEntity> detailList = sprinkleMasterEntity.getDetails();
-
-        SprinkleDetailEntity sprinkleDetailEntity = pickup(detailList);
-
-        return sprinkleDetailEntity.getMoney();
     }
 
     private SprinkleDetailEntity pickup(List<SprinkleDetailEntity> detailList) {

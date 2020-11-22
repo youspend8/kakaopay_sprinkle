@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SprinkleMasterRepository extends JpaRepository<SprinkleMasterEntity, String> {
+    SprinkleMasterEntity findByToken(String token);
 }
