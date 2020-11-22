@@ -4,7 +4,7 @@ import com.kakao.kapi.constants.ErrorType;
 import com.kakao.kapi.exception.SprinkleValidationException;
 
 public class PickupSelfSprinkleException extends SprinkleValidationException {
-    public PickupSelfSprinkleException(String message) {
+    public PickupSelfSprinkleException() {
         super(ErrorType.CODE_23);
     }
 }

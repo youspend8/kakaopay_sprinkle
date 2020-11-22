@@ -9,5 +9,6 @@ public class SprinkleException extends RuntimeException {
 
     public SprinkleException(ErrorType errorType) {
         super(errorType.getMessage());
+        this.errorType = errorType;
     }
 }
