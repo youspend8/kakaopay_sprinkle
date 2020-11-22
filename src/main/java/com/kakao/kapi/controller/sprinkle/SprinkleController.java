@@ -2,6 +2,7 @@ package com.kakao.kapi.controller.sprinkle;
 
 import com.kakao.kapi.domain.ResponseData;
 import com.kakao.kapi.domain.SprinkleGenerateVO;
+import com.kakao.kapi.domain.dto.SprinkleMaster;
 import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 import com.kakao.kapi.service.SprinkleService;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +25,15 @@ public class SprinkleController {
      * @return {@link SprinkleMasterEntity}
      */
     @GetMapping("/{token}")
-    public ResponseEntity<?> info(
+    public ResponseEntity<ResponseData<SprinkleMaster>> info(
             @RequestHeader("X-USER-ID") int userId,
             @RequestHeader("X-ROOM-ID") String roomId,
             @PathVariable("token") String token) {
 
-        SprinkleMasterEntity sprinkleMasterEntity = sprinkleService.lookup(userId, roomId, token);
+        SprinkleMaster sprinkleMaster = sprinkleService.lookup(userId, roomId, token);
 
         return ResponseEntity.ok(
-                ResponseData.valueOf(sprinkleMasterEntity));
+                ResponseData.valueOf(sprinkleMaster));
     }
 
     /**
@@ -62,7 +63,7 @@ public class SprinkleController {
      * @return 줍기 성공한 금액
      */
     @PutMapping("/{token}")
-    public ResponseEntity<?> pickup(
+    public ResponseEntity<ResponseData<Integer>> pickup(
             @RequestHeader("X-USER-ID") int userId,
             @RequestHeader("X-ROOM-ID") String roomId,
             @PathVariable("token") String token) {

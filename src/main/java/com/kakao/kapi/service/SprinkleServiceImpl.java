@@ -2,13 +2,13 @@ package com.kakao.kapi.service;
 
 import com.kakao.kapi.constants.ErrorType;
 import com.kakao.kapi.domain.SprinkleGenerateVO;
+import com.kakao.kapi.domain.dto.SprinkleDetail;
+import com.kakao.kapi.domain.dto.SprinkleMaster;
 import com.kakao.kapi.domain.entity.SprinkleDetailEntity;
 import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 import com.kakao.kapi.exception.SprinkleNotFoundException;
-import com.kakao.kapi.exception.badrequest.ExpirySprinkleException;
-import com.kakao.kapi.exception.badrequest.MoreThanOncePickupException;
-import com.kakao.kapi.exception.badrequest.PickupSelfSprinkleException;
-import com.kakao.kapi.exception.badrequest.SoldOutSprinkleException;
+import com.kakao.kapi.exception.badrequest.*;
+import com.kakao.kapi.exception.forbidden.AccessDeniedSprinkleException;
 import com.kakao.kapi.exception.forbidden.NotMatchRoomException;
 import com.kakao.kapi.repository.SprinkleDetailRepository;
 import com.kakao.kapi.repository.SprinkleMasterRepository;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -131,7 +132,41 @@ public class SprinkleServiceImpl implements SprinkleService {
     }
 
     @Override
-    public SprinkleMasterEntity lookup(int userId, String roomId, String token) {
-        return null;
+    @Transactional
+    public SprinkleMaster lookup(int userId, String roomId, String token) {
+        SprinkleMasterEntity sprinkleMasterEntity = sprinkleMasterRepository.findByToken(token);
+
+        validateLookup(sprinkleMasterEntity, userId, roomId);
+
+        //  줍기 완료된 건 목록
+        List<SprinkleDetailEntity> pickedDetailEntity = sprinkleMasterEntity.getDetails().stream()
+                .filter(SprinkleDetailEntity::isPicked)
+                .collect(Collectors.toList());
+
+        return SprinkleMaster.builder()
+                .money(sprinkleMasterEntity.getMoney())
+                .createAt(sprinkleMasterEntity.getCreateAt())
+                .pickupMoney(pickedDetailEntity.stream().mapToInt(SprinkleDetailEntity::getMoney).sum())
+                .pickupList(pickedDetailEntity.stream().map(entity -> SprinkleDetail.builder()
+                        .money(entity.getMoney())
+                        .userId(entity.getUserId())
+                        .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private void validateLookup(SprinkleMasterEntity sprinkleMasterEntity, int userId, String roomId) {
+        //  해당 Token의 뿌리기를 찾을 수 없습니다.
+        if (sprinkleMasterEntity == null) {
+            throw new SprinkleNotFoundException(ErrorType.CODE_102);
+        }
+        //  뿌린 건에 대한 조회는 7일 동안 할 수 있습니다.
+        if (sprinkleMasterEntity.isLookupExpired()) {
+            throw new InvalidPeriodSprinkleException();
+        }
+        //  뿌린 사람 자신만 조회를 할 수 있습니다.
+        if (userId != sprinkleMasterEntity.getUserId()) {
+            throw new AccessDeniedSprinkleException();
+        }
     }
 }
