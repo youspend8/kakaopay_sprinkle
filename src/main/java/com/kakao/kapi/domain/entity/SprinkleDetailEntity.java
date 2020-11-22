@@ -32,4 +32,21 @@ public class SprinkleDetailEntity {
     @JoinColumn(name = "TOKEN")
     @ToString.Exclude
     private SprinkleMasterEntity master;
+
+    /**
+     * 줍기 처리
+     * @param userId 사용자 ID
+     */
+    public void setPickup(int userId) {
+        this.userId = userId;
+        this.pickupAt = LocalDateTime.now();
+    }
+
+    /**
+     * 줍기 여부 확인
+     * @return 이미 주웠는지
+     */
+    public boolean isPicked() {
+        return userId != null && pickupAt != null;
+    }
 }

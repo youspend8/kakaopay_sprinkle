@@ -40,4 +40,21 @@ public class SprinkleMasterEntity {
     @JsonProperty("pickup_list")
     @ToString.Exclude
     private List<SprinkleDetailEntity> details;
+
+    /**
+     * 뿌리기가 마감되었는지 확인 (남은 수량이 있는가)
+     * @return 마감 여부
+     */
+    public boolean isSoldOut() {
+        return details.stream()
+                .allMatch(SprinkleDetailEntity::isPicked);
+    }
+
+    /**
+     * 뿌리기 유효기간이 만료되었는지 확인
+     * @return 유효기간 만료 여부
+     */
+    public boolean isExpired() {
+        return createAt.isBefore(LocalDateTime.now().minusMinutes(10));
+    }
 }
