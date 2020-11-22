@@ -160,7 +160,7 @@ X-USER-ID: {USER_ID}
   "message": "정상적으로 처리되었습니다.",
   "data": {
     "money": 1000,
-    "create_at": "20201119131512",
+    "create_at": "2020-11-22T15:21:57",
     "pickup_money: 700,
     "pickup_list": [
       {
