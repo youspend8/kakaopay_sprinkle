@@ -84,7 +84,7 @@ public class SprinkleServiceImpl implements SprinkleService {
     public int pickup(int userId, String roomId, String token) {
         SprinkleMasterEntity sprinkleMasterEntity = sprinkleMasterRepository.findByToken(token);
 
-        validateSprinkle(sprinkleMasterEntity, userId, roomId);
+        validatePickup(sprinkleMasterEntity, userId, roomId);
 
         List<SprinkleDetailEntity> detailList = sprinkleMasterEntity.getDetails();
 
@@ -94,7 +94,7 @@ public class SprinkleServiceImpl implements SprinkleService {
         return sprinkleDetailEntity.getMoney();
     }
 
-    private void validateSprinkle(SprinkleMasterEntity sprinkleMasterEntity, int userId, String roomId) {
+    private void validatePickup(SprinkleMasterEntity sprinkleMasterEntity, int userId, String roomId) {
         //  해당 Token의 뿌리기를 찾을 수 없습니다.
         if (sprinkleMasterEntity == null) {
             throw new SprinkleNotFoundException(ErrorType.CODE_102);
