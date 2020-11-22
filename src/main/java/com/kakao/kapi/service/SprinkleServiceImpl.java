@@ -1,8 +1,14 @@
 package com.kakao.kapi.service;
 
+import com.kakao.kapi.constants.ErrorType;
 import com.kakao.kapi.domain.SprinkleGenerateVO;
 import com.kakao.kapi.domain.entity.SprinkleDetailEntity;
 import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
+import com.kakao.kapi.exception.SprinkleNotFoundException;
+import com.kakao.kapi.exception.badrequest.ExpirySprinkleException;
+import com.kakao.kapi.exception.badrequest.MoreThanOncePickupException;
+import com.kakao.kapi.exception.badrequest.PickupSelfSprinkleException;
+import com.kakao.kapi.exception.forbidden.NotMatchRoomException;
 import com.kakao.kapi.repository.SprinkleDetailRepository;
 import com.kakao.kapi.repository.SprinkleMasterRepository;
 import com.kakao.kapi.util.RandomNumberGenerator;
@@ -74,7 +80,39 @@ public class SprinkleServiceImpl implements SprinkleService {
 
     @Override
     public int pickup(int userId, String roomId, String token) {
-        return 0;
+        SprinkleMasterEntity sprinkleMasterEntity = sprinkleMasterRepository.findById(token)
+                .orElseThrow(() -> new SprinkleNotFoundException(ErrorType.CODE_102));
+        //  자신이 뿌리기한 건은 자신이 받을 수 없습니다.
+        if (userId == sprinkleMasterEntity.getUserId()) {
+            throw new PickupSelfSprinkleException();
+        }
+        //  뿌리기가 호출된 대화방과 동일한 대화방에 속한 사용자만이 받을 수 있습니다.
+        if (!roomId.equals(sprinkleMasterEntity.getRoomId())) {
+            throw new NotMatchRoomException();
+        }
+        //  뿌린건은 10분간만 유효합니다.
+        if (sprinkleMasterEntity.getCreateAt().isBefore(LocalDateTime.now().minusMinutes(10))) {
+            throw new ExpirySprinkleException();
+        }
+        //  뿌리기 당 한 사용자는 한번만 받을 수 있습니다.
+        if (sprinkleMasterEntity.getDetails().stream()
+                .filter(x -> x.getUserId() != null)
+                .anyMatch(x -> x.getUserId() == userId)) {
+            throw new MoreThanOncePickupException();
+        }
+
+        List<SprinkleDetailEntity> detailList = sprinkleMasterEntity.getDetails();
+
+        SprinkleDetailEntity sprinkleDetailEntity = pickup(detailList);
+
+        return sprinkleDetailEntity.getMoney();
+    }
+
+    private SprinkleDetailEntity pickup(List<SprinkleDetailEntity> detailList) {
+        if (detailList.size() == 1) {
+            return detailList.get(0);
+        }
+        return detailList.get(RandomNumberGenerator.generateInt(detailList.size()));
     }
 
     @Override

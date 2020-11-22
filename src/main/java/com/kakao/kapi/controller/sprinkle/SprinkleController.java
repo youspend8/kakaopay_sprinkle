@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/v1/sprinkle", consumes = "application/json")
+@RequestMapping(value = "/v1/sprinkle", consumes = "application/json", produces = "application/json")
 @RequiredArgsConstructor
 public class SprinkleController {
     private final SprinkleService sprinkleService;
@@ -31,7 +31,8 @@ public class SprinkleController {
 
         SprinkleMasterEntity sprinkleMasterEntity = sprinkleService.lookup(userId, roomId, token);
 
-        return ResponseEntity.ok(sprinkleMasterEntity);
+        return ResponseEntity.ok(
+                ResponseData.valueOf(sprinkleMasterEntity));
     }
 
     /**
@@ -41,7 +42,7 @@ public class SprinkleController {
      * @param sprinkleGenerate {@link SprinkleGenerateVO}
      * @return 생성된 Token
      */
-    @PostMapping(produces = "application/json; charset=UTF-8")
+    @PostMapping
     public ResponseEntity<ResponseData<String>> sprinkle(
             @RequestHeader("X-USER-ID") int userId,
             @RequestHeader("X-ROOM-ID") String roomId,
@@ -68,6 +69,7 @@ public class SprinkleController {
 
         int money = sprinkleService.pickup(userId, roomId, token);
 
-        return ResponseEntity.ok(money);
+        return ResponseEntity.ok(
+                ResponseData.valueOf(money));
     }
 }
