@@ -57,4 +57,12 @@ public class SprinkleMasterEntity {
     public boolean isExpired() {
         return createAt.isBefore(LocalDateTime.now().minusMinutes(10));
     }
+
+    /**
+     * 뿌리기 조회 유효기간이 만료되었는지 확인
+     * @return 조회 유효기간 만료 여부
+     */
+    public boolean isLookupExpired() {
+        return createAt.isBefore(LocalDateTime.now().minusDays(7));
+    }
 }
