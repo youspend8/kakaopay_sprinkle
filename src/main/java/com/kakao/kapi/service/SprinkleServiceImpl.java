@@ -132,7 +132,7 @@ public class SprinkleServiceImpl implements SprinkleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public SprinkleMaster lookup(int userId, String roomId, String token) {
         SprinkleMasterEntity sprinkleMasterEntity = sprinkleMasterRepository.findByToken(token);
 
