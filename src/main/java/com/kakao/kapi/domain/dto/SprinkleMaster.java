@@ -3,13 +3,11 @@ package com.kakao.kapi.domain.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.kakao.kapi.domain.entity.SprinkleDetailEntity;
 import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 뿌리기 정보 조회 DTO
@@ -36,19 +34,11 @@ public class SprinkleMaster {
      * @return {@link SprinkleMaster} DTO
      */
     public static SprinkleMaster from(SprinkleMasterEntity sprinkleMasterEntity) {
-        //  줍기 완료된 건 목록
-        List<SprinkleDetailEntity> pickedDetailEntity = sprinkleMasterEntity
-                .getDetails().getFilteredPickedList();
-
         return SprinkleMaster.builder()
                 .money(sprinkleMasterEntity.getMoney())
                 .createAt(sprinkleMasterEntity.getCreateAt())
-                .pickupMoney(pickedDetailEntity.stream().mapToInt(SprinkleDetailEntity::getMoney).sum())
-                .pickupList(pickedDetailEntity.stream().map(entity -> SprinkleDetail.builder()
-                        .money(entity.getMoney())
-                        .userId(entity.getUserId())
-                        .build())
-                        .collect(Collectors.toList()))
+                .pickupMoney(sprinkleMasterEntity.getDetails().getFilteredPickedSum())
+                .pickupList(sprinkleMasterEntity.getDetails().getFilteredPickedDtoList())
                 .build();
     }
 }
