@@ -120,13 +120,6 @@ public class SprinkleServiceImpl implements SprinkleService {
         }
     }
 
-    private SprinkleDetailEntity pickup(List<SprinkleDetailEntity> detailList) {
-        if (detailList.size() == 1) {
-            return detailList.get(0);
-        }
-        return detailList.get(RandomNumberGenerator.generateInt(detailList.size()));
-    }
-
     @Override
     @Transactional(readOnly = true)
     public SprinkleMaster lookup(int userId, String roomId, String token) {
