@@ -2,6 +2,7 @@ package com.kakao.kapi.controller;
 
 import com.kakao.kapi.domain.entity.SprinkleDetailEntity;
 import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
+import com.kakao.kapi.domain.entity.embedded.SprinkleDetails;
 import com.kakao.kapi.repository.SprinkleMasterRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -127,11 +128,11 @@ public class PickupTest extends SprinkleControllerTests {
                 .division(3)
                 .money(1000)
                 .createAt(LocalDateTime.now())
-                .details(Arrays.asList(
+                .details(new SprinkleDetails(Arrays.asList(
                         SprinkleDetailEntity.builder().money(235).pickupAt(LocalDateTime.now().minusMinutes(3)).userId(495).build(),
                         SprinkleDetailEntity.builder().money(473).build(),
                         SprinkleDetailEntity.builder().money(292).build()
-                ))
+                )))
                 .build();
     }
 }

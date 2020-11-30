@@ -3,6 +3,7 @@ package com.kakao.kapi.domain.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,4 +27,18 @@ public class SprinkleMaster {
     private LocalDateTime createAt;
 
     private List<SprinkleDetail> pickupList;
+
+    /**
+     * Entity -> DTO 간 변환 정적 팩토리 메소드
+     * @param sprinkleMasterEntity Entity
+     * @return {@link SprinkleMaster} DTO
+     */
+    public static SprinkleMaster from(SprinkleMasterEntity sprinkleMasterEntity) {
+        return SprinkleMaster.builder()
+                .money(sprinkleMasterEntity.getMoney())
+                .createAt(sprinkleMasterEntity.getCreateAt())
+                .pickupMoney(sprinkleMasterEntity.getDetails().getFilteredPickedSum())
+                .pickupList(sprinkleMasterEntity.getDetails().getFilteredPickedDtoList())
+                .build();
+    }
 }

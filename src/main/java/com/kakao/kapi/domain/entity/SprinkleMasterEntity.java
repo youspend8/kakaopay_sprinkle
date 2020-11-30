@@ -1,11 +1,13 @@
 package com.kakao.kapi.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kakao.kapi.domain.entity.embedded.SprinkleDetails;
+import com.kakao.kapi.util.RandomNumberGenerator;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "SPRINKLE_MASTER")
@@ -35,18 +37,26 @@ public class SprinkleMasterEntity {
     @Column(name = "DIVISION")
     private int division;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "TOKEN")
-    @JsonProperty("pickup_list")
-    @ToString.Exclude
-    private List<SprinkleDetailEntity> details;
+    @Embedded
+    private SprinkleDetails details;
+
+    /**
+     * 줍기 처리
+     * @return 줍기 처리된 건 SprinkleDetail Entity 객체
+     */
+    public SprinkleDetailEntity pickup() {
+        if (details.size() == 1) {
+            return details.getList().get(0);
+        }
+        return details.getList().get(RandomNumberGenerator.generateInt(details.size()));
+    }
 
     /**
      * 뿌리기가 마감되었는지 확인 (남은 수량이 있는가)
      * @return 마감 여부
      */
     public boolean isSoldOut() {
-        return details.stream()
+        return details.getList().stream()
                 .allMatch(SprinkleDetailEntity::isPicked);
     }
 

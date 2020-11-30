@@ -79,7 +79,7 @@ public class SprinkleRepositoryTest {
     public void deleteTest(String token) {
         SprinkleMasterEntity sprinkleMasterEntity = sprinkleMasterRepository.findById(token).orElse(new SprinkleMasterEntity());
         assertDoesNotThrow(() ->
-                sprinkleDetailRepository.deleteAll(sprinkleMasterEntity.getDetails()));
+                sprinkleDetailRepository.deleteAll(sprinkleMasterEntity.getDetails().getList()));
         assertDoesNotThrow(() ->
                 sprinkleMasterRepository.deleteById(token));
     }

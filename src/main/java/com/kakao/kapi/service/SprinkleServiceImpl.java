@@ -2,7 +2,6 @@ package com.kakao.kapi.service;
 
 import com.kakao.kapi.constants.ErrorType;
 import com.kakao.kapi.domain.SprinkleGenerateVO;
-import com.kakao.kapi.domain.dto.SprinkleDetail;
 import com.kakao.kapi.domain.dto.SprinkleMaster;
 import com.kakao.kapi.domain.entity.SprinkleDetailEntity;
 import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,9 +85,7 @@ public class SprinkleServiceImpl implements SprinkleService {
 
         validatePickup(sprinkleMasterEntity, userId, roomId);
 
-        List<SprinkleDetailEntity> detailList = sprinkleMasterEntity.getDetails();
-
-        SprinkleDetailEntity sprinkleDetailEntity = pickup(detailList);
+        SprinkleDetailEntity sprinkleDetailEntity = sprinkleMasterEntity.pickup();
         sprinkleDetailEntity.setPickup(userId);
 
         return sprinkleDetailEntity.getMoney();
@@ -117,18 +113,9 @@ public class SprinkleServiceImpl implements SprinkleService {
             throw new NotMatchRoomException();
         }
         //  뿌리기 당 한 사용자는 한번만 받을 수 있습니다.
-        if (sprinkleMasterEntity.getDetails().stream()
-                .filter(x -> x.getUserId() != null)
-                .anyMatch(x -> x.getUserId() == userId)) {
+        if (sprinkleMasterEntity.getDetails().isExistsUser(userId)) {
             throw new MoreThanOncePickupException();
         }
-    }
-
-    private SprinkleDetailEntity pickup(List<SprinkleDetailEntity> detailList) {
-        if (detailList.size() == 1) {
-            return detailList.get(0);
-        }
-        return detailList.get(RandomNumberGenerator.generateInt(detailList.size()));
     }
 
     @Override
@@ -138,21 +125,7 @@ public class SprinkleServiceImpl implements SprinkleService {
 
         validateLookup(sprinkleMasterEntity, userId, roomId);
 
-        //  줍기 완료된 건 목록
-        List<SprinkleDetailEntity> pickedDetailEntity = sprinkleMasterEntity.getDetails().stream()
-                .filter(SprinkleDetailEntity::isPicked)
-                .collect(Collectors.toList());
-
-        return SprinkleMaster.builder()
-                .money(sprinkleMasterEntity.getMoney())
-                .createAt(sprinkleMasterEntity.getCreateAt())
-                .pickupMoney(pickedDetailEntity.stream().mapToInt(SprinkleDetailEntity::getMoney).sum())
-                .pickupList(pickedDetailEntity.stream().map(entity -> SprinkleDetail.builder()
-                        .money(entity.getMoney())
-                        .userId(entity.getUserId())
-                        .build())
-                        .collect(Collectors.toList()))
-                .build();
+        return SprinkleMaster.from(sprinkleMasterEntity);
     }
 
     private void validateLookup(SprinkleMasterEntity sprinkleMasterEntity, int userId, String roomId) {
