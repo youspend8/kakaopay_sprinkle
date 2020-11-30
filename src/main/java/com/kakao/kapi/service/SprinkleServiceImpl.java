@@ -113,9 +113,7 @@ public class SprinkleServiceImpl implements SprinkleService {
             throw new NotMatchRoomException();
         }
         //  뿌리기 당 한 사용자는 한번만 받을 수 있습니다.
-        if (sprinkleMasterEntity.getDetails().stream()
-                .filter(x -> x.getUserId() != null)
-                .anyMatch(x -> x.getUserId() == userId)) {
+        if (sprinkleMasterEntity.getDetails().isExistsUser(userId)) {
             throw new MoreThanOncePickupException();
         }
     }

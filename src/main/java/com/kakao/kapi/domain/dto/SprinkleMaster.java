@@ -37,9 +37,8 @@ public class SprinkleMaster {
      */
     public static SprinkleMaster from(SprinkleMasterEntity sprinkleMasterEntity) {
         //  줍기 완료된 건 목록
-        List<SprinkleDetailEntity> pickedDetailEntity = sprinkleMasterEntity.getDetails().stream()
-                .filter(SprinkleDetailEntity::isPicked)
-                .collect(Collectors.toList());
+        List<SprinkleDetailEntity> pickedDetailEntity = sprinkleMasterEntity
+                .getDetails().getFilteredPickedList();
 
         return SprinkleMaster.builder()
                 .money(sprinkleMasterEntity.getMoney())
