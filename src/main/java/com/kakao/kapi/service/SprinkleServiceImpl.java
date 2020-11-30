@@ -85,9 +85,7 @@ public class SprinkleServiceImpl implements SprinkleService {
 
         validatePickup(sprinkleMasterEntity, userId, roomId);
 
-        List<SprinkleDetailEntity> detailList = sprinkleMasterEntity.getDetails();
-
-        SprinkleDetailEntity sprinkleDetailEntity = pickup(detailList);
+        SprinkleDetailEntity sprinkleDetailEntity = sprinkleMasterEntity.pickup();
         sprinkleDetailEntity.setPickup(userId);
 
         return sprinkleDetailEntity.getMoney();
