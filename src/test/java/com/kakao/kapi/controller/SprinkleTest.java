@@ -10,9 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("뿌리기 생성 테스트")
 public class SprinkleTest extends SprinkleControllerTests {
     @Test
-    @DisplayName("뿌리기 생성 테스트 - 뿌리기 생성 후 생성된 Token 값 return")
+    @DisplayName("뿌리기 생성 후 생성된 Token 값 return")
     void sprinkleTest() throws Exception {
         sprinkleResultActions()
                 .andExpect(status().is(201))

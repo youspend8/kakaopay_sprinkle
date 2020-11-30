@@ -6,6 +6,7 @@ import com.kakao.kapi.domain.dto.SprinkleMaster;
 import com.kakao.kapi.domain.entity.SprinkleMasterEntity;
 import com.kakao.kapi.service.SprinkleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.net.URI;
 @RestController
 @RequestMapping(value = "/v1/sprinkle", consumes = "application/json", produces = "application/json")
 @RequiredArgsConstructor
+@Slf4j
 public class SprinkleController {
     private final SprinkleService sprinkleService;
 
@@ -29,6 +31,7 @@ public class SprinkleController {
             @RequestHeader("X-USER-ID") int userId,
             @RequestHeader("X-ROOM-ID") String roomId,
             @PathVariable("token") String token) {
+        log.info(">> info :: userId = {}, roomId = {}, token = {}", userId, roomId, token);
 
         SprinkleMaster sprinkleMaster = sprinkleService.lookup(userId, roomId, token);
 
@@ -48,6 +51,7 @@ public class SprinkleController {
             @RequestHeader("X-USER-ID") int userId,
             @RequestHeader("X-ROOM-ID") String roomId,
             @RequestBody SprinkleGenerateVO sprinkleGenerate) {
+        log.info(">> sprinkle :: userId = {}, roomId = {}, params = {}", userId, roomId, sprinkleGenerate);
 
         String token = sprinkleService.sprinkle(userId, roomId, sprinkleGenerate);
 
@@ -67,6 +71,7 @@ public class SprinkleController {
             @RequestHeader("X-USER-ID") int userId,
             @RequestHeader("X-ROOM-ID") String roomId,
             @PathVariable("token") String token) {
+        log.info(">> pickup :: userId = {}, roomId = {}, token = {}", userId, roomId, token);
 
         int money = sprinkleService.pickup(userId, roomId, token);
 

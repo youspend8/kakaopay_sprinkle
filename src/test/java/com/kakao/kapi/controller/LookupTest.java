@@ -19,12 +19,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@DisplayName("뿌리기 조회 테스트")
 public class LookupTest extends SprinkleControllerTests {
     @MockBean
     private SprinkleMasterRepository sprinkleMasterRepository;
 
     @Test
-    @DisplayName("조회 테스트 - 조회된 뿌리기 상태 return")
+    @DisplayName("조회된 뿌리기 상태 return")
     void lookupTest() throws Exception {
         when(sprinkleMasterRepository.findByToken(anyString()))
                 .thenReturn(mockSprinkle());
@@ -38,7 +39,7 @@ public class LookupTest extends SprinkleControllerTests {
     }
 
     @Test
-    @DisplayName("조회 테스트 - 자신의 뿌리기가 아닐 경우")
+    @DisplayName("자신의 뿌리기가 아닐 경우")
     void lookupAccessDenyTest() throws Exception {
         when(sprinkleMasterRepository.findByToken(anyString()))
                 .thenReturn(mockSprinkle());
@@ -51,7 +52,7 @@ public class LookupTest extends SprinkleControllerTests {
     }
 
     @Test
-    @DisplayName("조회 테스트 - 뿌리기 후 7일이 지난 경우")
+    @DisplayName("뿌리기 후 7일이 지난 경우")
     void lookupExpireTest() throws Exception {
         SprinkleMasterEntity sprinkleMasterEntity = mock(SprinkleMasterEntity.class);
 

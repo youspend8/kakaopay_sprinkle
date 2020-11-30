@@ -1,0 +1,17 @@
+
+spring:
+  main:
+    banner-mode: off
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/kakaopay
+    username: service
+    password: service!@#$
+    platform: h2
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop

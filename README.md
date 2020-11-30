@@ -34,8 +34,10 @@
 
 ## 주요 문제 해결 전략
 
-1. 다수의 서버에 다수의 인스턴스로 동작하더라도 기능에 문제가 없도록 설계
-
+1. 서비스 로직에서의 특정 상황에서의 검증결과에따라 반환하는 결과 코드를 테스트 → Mockito 라이브러리를 활용하여 원하는 Case의 Mock 객체를 setup하여 테스트 코드 작성
+2. REST API를 최대한으로 적용하여 API 작성
+ 
+ 
 ## 개발도구 및 환경
 
 - OS : Window, OS X
@@ -187,7 +189,7 @@ X-USER-ID: {USER_ID}
 |Name|Type|Description|
 |:---|:---:|:---|
 |money|`Number`|뿌린 금액|
-|create_at|`Number`|뿌린 일시|
+|create_at|`String`|뿌린 일시|
 |pickup_money|`Number`|총 주운 금액|
 |pickup_list|`Array`|줍기 처리된 목록|
 |pickup_list.money|`Number`|주운 금액|
@@ -204,6 +206,8 @@ X-USER-ID: {USER_ID}
 |21|뿌리기가 호출된 대화방과 동일한 대화방에 속한 사용자만이 받을 수 있습니다.|
 |22|뿌리기 당 한 사용자는 한번만 받을 수 있습니다.|
 |23|자신이 뿌리기한 건은 자신이 받을 수 없습니다.|
+|24|해당 뿌리기건은 마감되었습니다.|
 |50|유효하지 않은 token 입니다.|
 |100|요청 헤더 중 누락된 값이 존재합니다.|
 |101|Internal Server Error|
+|102|해당 Token의 뿌리기를 찾을 수 없습니다.|
